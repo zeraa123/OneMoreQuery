@@ -1,0 +1,835 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace Adocsl
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+
+            //baglanti.ConnectionString = "Server=DESKTOP-S9B1IE8;Database=Northwind;Intagrated Security=true";//WınowsAutohebntıcatıon
+
+
+            //SqlConnection bglt = new SqlConnection(@"server=DESKTOP-2P0M1AR;initial catalog=Northwind;integrated security=false;user id=sa;password=123");
+            //bglt.Open();
+            //SqlCommand cmd = new SqlCommand("Select * from Urunler", bglt);
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read()) 
+            //{
+            //    Console.WriteLine(reader["UrunAdi"].ToString());
+
+            //}
+            //bglt.Close();
+
+            Product product = new Product();
+            SqlConnection baglanti = product.BaglantiKur();
+            //product.TabloyaGoreListele("Kategoriler", baglanti);
+
+           // product.TabloOlustur(baglanti);
+           //product.KayıtEkleme("melahat",8,baglanti);
+            product.KayıtSil(baglanti);
+
+
+
+
+
+            Console.ReadLine();
+
+
+        }
+
+        public class Product
+        {
+            public SqlConnection BaglantiKur()
+            {
+                SqlConnection bglt = new SqlConnection(@"server=DESKTOP-2P0M1AR;initial catalog=Northwind;integrated security=false;user id=sa;password=123");
+                if (bglt.State == ConnectionState.Closed)
+                {
+                    bglt.Open();
+                }
+                return bglt;
+
+            }
+            public void TabloyaGoreListele(string tabload, SqlConnection conn)
+            {
+                conn.Close();
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("Select * from " + tabload, conn);
+                SqlDataReader liste = cmd.ExecuteReader();
+                while (liste.Read())
+                {
+                    Console.WriteLine("{0}-{1}",liste[0].ToString(),liste[1].ToString());
+                }
+                conn.Close();
+            }
+            public void UrunListele(SqlConnection conn)
+            {
+                conn.Close();
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("Select * from urunler", conn);
+                SqlDataReader liste = cmd.ExecuteReader();
+                while (liste.Read())
+                {
+                    Console.WriteLine(liste[1].ToString());
+                }
+                conn.Close();
+            }
+            public void TabloOlustur(SqlConnection conn)
+            {
+                //conn.Close();
+                conn.Open();
+
+                try
+                {
+                    Console.WriteLine("Bir tablo ismi yazınız");
+                    string tabload = Console.ReadLine();
+                    SqlCommand sql = new SqlCommand(@"Create Table " + tabload + "(id int identity(1, 1) not null, ogrenciAd nvarchar(50), ogrenciNo smallint)", conn);
+                    sql.ExecuteNonQuery();
+                    Console.WriteLine(tabload + "  isminde bir tablo oluşturuldu");
+                    conn.Close();
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Bir hata oluştu");
+                }
+
+
+            }
+            public void KayıtEkleme(string ogrAd,int ogrNo,SqlConnection connection)
+            {
+                if (connection.State==ConnectionState.Closed)
+                {
+                    connection.Open();
+                }
+                SqlCommand cmd = new SqlCommand("Insert into ogr (ogrenciAd,ogrenciNo) values ('"+ogrAd+"','"+ogrNo+"')",connection);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine( ogrAd + " Listeye bir kayıt eklendi");
+                connection.Close();
+
+
+
+            }
+            public void KayıtSil(SqlConnection bglnt)
+            {
+                 TabloyaGoreListele("ogr",bglnt);
+                if (bglnt.State==ConnectionState.Closed)
+                {
+                    bglnt.Open();
+
+                }
+               
+
+                Console.WriteLine( "Kaç nolu kaydı silmek istersin" );
+                int deger=Convert.ToInt32(Console.ReadLine());
+                SqlCommand cmd = new SqlCommand("Delete from ogr where id="+deger , bglnt);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine( "Kayıt silindi" );
+            }
+
+
+
+
+
+
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //SqlConnection bglnt = new SqlConnection(@"server=DESKTOP-V653CLI\SQLEXPRESS;initial catalog=Northwind;integrated security=False;user id=sa;password=123");
+            //bglnt.Open();
+
+            //SqlCommand cmd = new SqlCommand("Select *from Urunler", bglnt);
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Console.WriteLine(reader["UrunAdi"].ToString());
+            //}
+            //bglnt.Close();
+            Product product = new Product();
+            SqlConnection baglanti = product.BaglantiKur();
+            product.TabloyaGoreListele("Satislar",baglanti);
+
+            Console.ReadLine();
+        }
+
+       public class Product
+        {
+            public SqlConnection BaglantiKur()
+            {
+                SqlConnection bglnt = new SqlConnection(@"server=DESKTOP-V653CLI\SQLEXPRESS;initial catalog=Northwind;integrated security=False;user id=sa;password=123");
+                if (bglnt.State == ConnectionState.Closed)
+                {
+                    bglnt.Open();
+                }
+                return bglnt;
+            }
+            //public void KayitListele(SqlConnection conn)
+            //{
+            //    conn.Close();
+            //    conn.Open();
+            //    SqlCommand cmd = new SqlCommand("Select * from Urunler", conn);
+            //    SqlDataReader liste = cmd.ExecuteReader();
+            //    while (liste.Read())
+            //    {
+            //        Console.WriteLine(liste[1].ToString());
+            //    }
+            //    conn.Close();
+            //}
+            public void TabloyaGoreListele(string tabloadi, SqlConnection conn)
+            {
+                conn.Close();
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("Select * from "+tabloadi, conn);
+                SqlDataReader liste = cmd.ExecuteReader();
+                while (liste.Read())
+                {
+                    Console.WriteLine(liste[1].ToString());
+                }
+                conn.Close();
+            }
+            public void UrunListele( SqlConnection conn)
+            {
+                conn.Close();
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("Select * from Urunler", conn);
+                SqlDataReader liste = cmd.ExecuteReader();
+                while (liste.Read())
+                {
+                    Console.WriteLine(liste[1].ToString());
+                }
+                conn.Close();
+            }
+        }
+    }
+}
+
+--satış detay tablosunda kayıt silindiğinde ürünün stoğunu arttıran trigger
+go
+create trigger trg_stokArttir
+on [Satis Detaylari]
+after
+delete
+as
+declare @id int,@adet smallint
+select @id=UrunId,@adet=miktar from deleted
+update Urunler set HedefStokDuzeyi+=@adet where UrunID=@id
+
+---------------------------------------------------------------
+select *,(BirimFiyati*0.18)kdv from Urunler
+select *, sd.BirimFiyati*0.18 Kdv, sd.BirimFiyati+sd.BirimFiyati*0.18 Dahilfiyat from [Satis Detaylari] sd
+
+
+--Function : Geri dönüşlü metot karşılığına gen yapı
+
+
+go
+create function fncKdvHesapla(@fiyat money)
+returns money
+as
+begin
+	declare  @kdv money
+	 set @kdv=@fiyat*0.18
+	return @kdv
+end
+
+select UrunAdi,BirimFiyati, dbo.fncKdvHesapla(BirimFiyati) as KDV from Urunler
+
+--Satılan Ürünlerin adetlerini ve indirimlşeri baz alarak her ürünün kdvli fiyatınıfunction u yazınız
+go
+create function fncGenelKdvliFiyat(@fiyat money,@adet int,@indirim float)
+returns money
+as
+begin
+	declare @kdvli money
+	set @kdvli=@fiyat+@fiyat*0.18
+	set @kdvli=@kdvli+(@kdvli*0.18)
+	set @kdvli=@kdvli*(1-@indirim)
+	return @kdvli
+end
+--İkinci Yöntem
+create function fncGenelKdvliFiyat1(@fiyat money,@adet int,@indirim float)
+returns money
+as
+begin
+	declare @Toplam money
+	set @Toplam=(@fiyat+@fiyat*0.18)*@adet*(1-@indirim)
+	return @Toplam
+end
+
+
+
+select UrunID,Miktar,sd.İndirim,dbo.fncGenelKdvliFiyat(BirimFiyati,Miktar,sd.İndirim ),dbo.fncGenelKdvliFiyat1(BirimFiyati,Miktar,sd.İndirim ) Toplam from [Satis Detaylari] sd
+
+
+
+
+-------------------------
+select *,(BirimFiyati*0.18)kdv from Urunler
+select *, sd.BirimFiyati*0.18 Kdv, sd.BirimFiyati+sd.BirimFiyati*0.18 Dahilfiyat from [Satis Detaylari] sd
+
+
+--Function : Geri dönüşlü metot karşılığına gen yapı
+
+
+go
+create function fncKdvHesapla(@fiyat money)
+returns money
+as
+begin
+	declare  @kdv money
+	 set @kdv=@fiyat*0.18
+	return @kdv
+end
+
+select UrunAdi,BirimFiyati, dbo.fncKdvHesapla(BirimFiyati) as KDV from Urunler
+
+--Satılan Ürünlerin adetlerini ve indirimlşeri baz alarak her ürünün kdvli fiyatınıfunction u yazınız
+go
+create function fncGenelKdvliFiyat(@fiyat money,@adet int,@indirim float)
+returns money
+as
+begin
+	declare @kdvli money
+	set @kdvli=@fiyat+@fiyat*0.18
+	set @kdvli=@kdvli+(@kdvli*0.18)
+	set @kdvli=@kdvli*(1-@indirim)
+	return @kdvli
+end
+--İkinci Yöntem
+create function fncGenelKdvliFiyat1(@fiyat money,@adet int,@indirim float)
+returns money
+as
+begin
+	declare @Toplam money
+	set @Toplam=(@fiyat+@fiyat*0.18)*@adet*(1-@indirim)
+	return @Toplam
+end
+
+
+
+select UrunID,Miktar,sd.İndirim,dbo.fncGenelKdvliFiyat(BirimFiyati,Miktar,sd.İndirim ),dbo.fncGenelKdvliFiyat1(BirimFiyati,Miktar,sd.İndirim ) Toplam from [Satis Detaylari] sd
+
+
+--Scalar-Valued Fonksiyon Bir tane değer döndüren fonksiyonlara denir
+--TableValued :geriye table tipinde değer döndüren fonksiyonlardır.
+go
+create function KategoriyeGireUrunler(@kId int)
+ returns table
+ as
+ return select * from Urunler where KategoriID=@kID
+ 
+ 
+  select * from dbo.KategoriyeGireUrunler(5)
+
+ declare @deger int
+ declare @tablo table
+ 
+ 
+ 
+ --Transaction : En küçük işlem Parçacığı
+ --Birden fazla işlem parçacığını tekbir işlem haline getirip bu işlem parcacığının herhangi bir yerinde hata olduğu zaman tüm işlemi iptal edip geri almayı sağlayan yapıdır.
+
+begin tran guncelleme
+Update Kategoriler set KategoriAdi='Yeni' where KategoriID=2
+delete from Kategoriler where KategoriID=1
+commit tran guncelleme
+rollback tran
+
+select * from Kategoriler
+------------------------------------------
+
+
+
+--Trigger(Tetikleyici): bir işlemden sonra başka bir işlem yapabilmeyi veya bir işlemin yerine başka bir işlem yapabilmeyi sağlayan yapıdır.
+-- Kullanıcı triggeri elle tetikleyemez 
+--Trigger diğer yapılardan farkı çalışacağı zamanı kendi belirler.
+--2 tane triger türü vardır After(Sonra), İnstead Of (Yerine)
+--Trigger işlemlerinde kullanılan iki sanal tablo vardır
+-- İnserted tablosu eklemeye çalışılan kayıtların tutulduğu sanal tablodur
+-- Deleted tablosu silin meye çalışılan kayıtların tutulduğu tablo
+--Update olayı içinse güncellemedn önceki kayıt için deleted sanal tablosu güncellemeden sonraki kayıt için inserted sanal tablosu kullanılır
+
+
+--Trigger(Tetikleyici): bir işlemden sonra başka bir işlem yapabilmeyi veya bir işlemin yerine başka bir işlem yapabilmeyi sağlayan yapıdır.
+-- Kullanıcı triggeri elle tetikleyemez 
+--Trigger diğer yapılardan farkı çalışacağı zamanı kendi belirler.
+--2 tane triger türü vardır After(Sonra), İnstead Of (Yerine)
+--Trigger işlemlerinde kullanılan iki sanal tablo vardır
+-- İnserted tablosu eklemeye çalışılan kayıtların tutulduğu sanal tablodur
+-- Deleted tablosu silin meye çalışılan kayıtların tutulduğu tablo
+--Update olayı içinse güncellemedn önceki kayıt için deleted sanal tablosu güncellemeden sonraki kayıt için inserted sanal tablosu kullanılır
+go
+alter trigger  UrunSil2
+on Urunler--Hangi tablo kullanılacak 
+instead of --hangi trigger tipi kullanılacak
+delete--hangi işlem için bu trigger çalışacak
+as
+    declare @Id int
+	select @Id=UrunID from deleted--1 atama yöntemi
+	set @Id=(select UrunID from deleted)--2 atama yöntemi
+   update Urunler set Sonlandi=0 where UrunID=@Id
+
+   select * from Urunler
+   update Urunler set Sonlandi=1
+   delete Urunler where UrunID=3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Delete belirli kayıt(ları) tablodan silme işlemini sağlayan komuttur.
+--Yazımı :delete [from] TabloAdi varsa where
+begin tran
+delete Urunler where KategoriID=null
+select * from Urunler
+rollback tran
+
+select * from [Satis Detaylari] where SatisID=10248
+
+select * from Satislar
+
+begin tran
+delete Satislar where SatisID=10248
+
+
+
+
+
+-- cross Join : yazılan  tablolardaki tüm kayıtları birbiri ile kartezyen çarparak birbiri ile ilşkilendirir
+select * from Urunler cross join Kategoriler
+select p.Adi,u.UrunAdi,t.SirketAdi from Urunler u cross join Personeller p cross join Tedarikciler t
+
+/*Kümeleme
+birleştirme(union) kesişim(intersect) ve fark(except) olmak üzere  3'e ayrılır
+farklı iki sorgu üzerine kümeleme uygulanırsa 
+    **-İstenen veriler kolon sayısı ve tipleri aynı olmak zorunda
+*/
+--Union Müşteri ve tedarikçiyi listeleyen sorgu
+
+select SirketAdi from Tedarikciler
+union
+select SirketAdi from Musteriler
+
+
+select SirketAdi from Tedarikciler
+intersect
+select SirketAdi from Musteriler
+
+select SirketAdi from Tedarikciler
+except
+select SirketAdi from Musteriler
+
+select SirketAdi from Musteriler
+except
+select SirketAdi from Tedarikciler
+
+
+select p.Adi,u.UrunAdi from Urunler u cross join Personeller p
+except
+select p.Adi,u.UrunAdi from Personeller p 
+left join Satislar s on p.PersonelID=s.PersonelID
+left join [Satis Detaylari] sd on sd.SatisID=s.SatisID
+left join Urunler u on u.UrunID=sd.UrunID group by p.Adi,u.UrunAdi 
+
+--hangi tedarikçi hangi ürünü hiç tedarik etmemiştir
+select UrunAdi,SirketAdi,MusteriAdi from Tedarikciler t cross join Urunler u
+except
+select UrunAdi,SirketAdi,MusteriAdi from Tedarikciler t left join Urunler u on t.TedarikciID=u.TedarikciID 
+
+
+
+
+
+
+
+
+--hangi ürün hangi müşteriye hiç satılmamıştır--hangi urun hangi müsteriye satılmıştır.
+
+select UrunAdi,MusteriAdi from Urunler cross join Musteriler
+except
+select u.UrunAdi,m.MusteriAdi from Urunler u 
+left join [Satis Detaylari] sd on sd.UrunID=u.UrunID
+left join Satislar s on s.SatisID=sd.SatisID
+left join Musteriler m on m.MusteriID=s.MusteriID
+
+select * from  [Satis Detaylari] where UrunID=14
+
+--Having kullanımı
+select p.Adi,u.UrunAdi,Sum(sd.BirimFiyati*sd.Miktar*(1-sd.İndirim)) tutar
+from Personeller p 
+left join Satislar s on s.PersonelID=p.PersonelID
+left join [Satis Detaylari] sd on sd.SatisID=s.SatisID
+left join Urunler u on u.UrunID=sd.UrunID 
+group by UrunAdi,p.Adi 
+having Sum(sd.BirimFiyati*sd.Miktar*(1-sd.İndirim))>1000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Outer join 
+3 çeşit outer join vardır 
+Left Outer Join : Left tablo ilk yazılan soldaki tablodur. Sol tablodaki tüm kayıtlar gelir null olsa dahi ve sağ tablodan sol tablonun ilişkili kayıtları getirilir. (sol tablo + sağ’ın solla ilişkili olan kısmı)*/
+
+select * from Kategoriler k left outer join Urunler u on  k.KategoriID=u.KategoriID where k.KategoriID is null
+
+select * from Urunler u left outer join Kategoriler k on u.KategoriID=k.KategoriID where u.UrunID is null
+
+
+/*
+Right Outer Join : Right tablo ilk yazılan tablodur. Sağ tablodaki tüm kayırtlar gelir null olsa bile sol tablodan sağ tablonun  ilişkili kayıtları getirilir.(sağ tablo + sol’un sağla ilişkili olan kısmı)*/
+
+select * from Kategoriler k right join Urunler u on  u.KategoriID=k.KategoriID where k.KategoriID is null
+select * from Urunler u right join Kategoriler k on u.KategoriID=k.KategoriID where u.KategoriID is null
+
+
+  
+/*
+Full Outer Join: hem sağdaki hem soldaki tablodan null kayıtlar dahil tüm kayıtları getirir
+*/
+select * from Kategoriler k full join Urunler u on u.KategoriID=k.KategoriID where k.KategoriID is null or u.KategoriID is null
+select * from Urunler k full join Kategoriler u on u.KategoriID=k.KategoriID
+
+
+-- cross Join : yazılan  tablolardaki tüm kayıtları birbiri ile kartezyen çarparak birbiri ile ilşkilendirir
+select * from Urunler cross join Kategoriler
+select p.Adi,u.UrunAdi,t.SirketAdi from Urunler u cross join Personeller p cross join Tedarikciler t
+
+/*Kümeleme
+birleştirme(union) kesişim(intersect) ve fark(except) olmak üzere  3'e ayrılır
+farklı iki sorgu üzerine kümeleme uygulanırsa 
+    **-İstenen veriler kolon sayısı ve tipleri aynı olmak zorunda
+*/
+--Union Müşteri ve tedarikçiyi listeleyen sorgu
+
+select SirketAdi from Tedarikciler
+union
+select SirketAdi from Musteriler
+
+
+select SirketAdi from Tedarikciler
+intersect
+select SirketAdi from Musteriler
+
+select SirketAdi from Tedarikciler
+except
+select SirketAdi from Musteriler
+
+select SirketAdi from Musteriler
+except
+select SirketAdi from Tedarikciler
+
+
+select p.Adi,u.UrunAdi from Urunler u cross join Personeller p
+except
+select p.Adi,u.UrunAdi from Personeller p 
+left join Satislar s on p.PersonelID=s.PersonelID
+left join [Satis Detaylari] sd on sd.SatisID=s.SatisID
+left join Urunler u on u.UrunID=sd.UrunID group by p.Adi,u.UrunAdi 
+
+
+select * from Satislar where PersonelID=
+(select PersonelID from Personeller where Adi='nancy')
+
+
+
+
+
+--satışlardaki satış id ile satış detaylarındaki en yüksek birim fiyatı bulma
+--ve en yüksek ürün id sini bulma
+select (select Urunadi from Urunler where UrunID=(select max(UrunID) 
+from [Satis Detaylari] SD where sd.SatisID=s.SatisID)) ,
+(select max(sd.BirimFiyati) from [Satis Detaylari] SD where sd.SatisID=s.SatisID), 
+* from Satislar S
+
+select (select max(UrunID) from [Satis Detaylari] SD where sd.SatisID=s.SatisID) ,
+(select max(sd.BirimFiyati) from [Satis Detaylari] SD where sd.SatisID=s.SatisID),
+* from Satislar S
+
+select *from [Satis Detaylari] sd where sd.SatisID =10250
+select max(UrunID) from [Satis Detaylari] SD where sd.SatisID=10250
+
+
+--DDl(Data Definition Language)
+--Create veritabanında nesneler oluşturmak için kullanılır
+--Alter veri tabanında nesnelerin yapısını değiştirmek için kullanılır.
+--Drop veri tabanındaki nesneleri silmek için kullanılır
+--Truncate  kayıtlar için ayrılan tüm boşluklar dahil her tüm kayıtları kaldırır.
+--Rename bir nesneyi yeniden adlandırmak için kullanılır.
+
+
+--DML(Data Manipulation Language)
+--Select Listeleme komutu veritabanından kayıt çekmek için kullanılır
+--insert tabloya veri yada veriler eklemek için kullanılır
+--update tablodan kayıt yada kayıtların güncellenmesi için kullanılır.
+--delete tablodan  kayıt veya kayıtları silmek için kullanılır
+--diğer komutlar
+--MERGE – UPSERT işlemi (ekleme veya güncelleme), başka bir ifadeyle birleştirme yapar.
+--CALL – PL/SQL veya Java alt programını çalıştırır.
+--EXPLAIN PLAN – Verilere erişim yolunun detaylarını açıklamak için kullanılır.
+--LOCK TABLE – Kontrolü eş zamanlılığı sağlamak için kullanılır.
+--diğer komutlar
+--https://www.gencayyildiz.com/blog/northwind-turkce-versiyonu/
+
+--select Kolonadları from urunler 
+/*
+select adi,soyadi from personeller
+select MusteriAdi from musteriler
+SELECT *FROM personeller
+select *from Urunler
+select *from Kategoriler
+select *from Tedarikciler*/
+/*
+select *from Urunler where UrunID=4/*bu yazılan kodda tüekçe desteklediği için I harfinin küçük harfi ı olarak yazıldı*/
+select urunadi from Urunler where urunıd=5*/
+
+/*
+select *from urunler where TedarikciID=7 and KategoriID<=3
+*/
+/*
+select *from Personeller where Sehir='London'
+select *from Musteriler where ulke='France'
+*/
+--tedarikçiid 1 kategori id si 1 hedef stok düzeyi 10 dan büyük ürünler tablosu
+
+/*select UrunAdi from  Urunler where TedarikciID=1 and KategoriID=2 and HedefStokDuzeyi>10*/
+
+--müşteri id'si "chops" olan
+--select *from Satislar where MusteriID='chops'
+
+/*select *from Urunler where UrunAdi like 'c%' or UrunAdi like '%a'--bu şekilde yazım ile ilk harfi c olan veriler gelir*/
+/*select *from Urunler where UrunAdi like '__c%'--3. harfi c olanlar
+select *from Urunler where UrunAdi like '%sos%'*/
+select *from Urunler where UrunAdi like 'c%'or UrunAdi like 'a%'
+select *from Urunler where UrunAdi like '[c,a]%'
+select *from Urunler where UrunAdi like 's%' and UrunAdi like '%e'
+select *from Urunler where UrunAdi like 's%e' 
+select *from Urunler where UrunID in(5,7,8,11)
+select *from Urunler where UrunAdi in('Chai','Chang')
+select * from Urunler where UrunID between 5 and 10
+SeLeCt *FroM urunler where BirimFiyati between 5 and 15
+select top 15 *from Urunler
+
+select top 3 *from urunler where UrunAdi like 'c%[n,a]_' and BirimFiyati between 18 and 75
+select *from Urunler order by BirimFiyati
+select *from Urunler order by BirimFiyati desc--desc tersten sıralama yapar
+--kategori id si 5 olmayan urun adının ikinci harfi i olan olan ürünleri stoklarına göre
+--tersten sıralayan komut
+
+select *from Urunler where KategoriID<>5 and UrunAdi like '_i%' order by HedefStokDuzeyi desc
+
+--ürünid si 5,14,17,25,34 olmayan ürünleri ekrana yazma
+select *from urunler where UrunID not in(5,14,17,25,34)
+select *from urunler where KategoriID in(2,3,4)
+select *from urunler where KategoriID not in(2,3,4)
+
+--içinde c harfi ve a harfi geçmeyen ürün adları
+select *from urunler where UrunAdi not like '%c%' and UrunAdi not like '%a%'
+select *from Kategoriler where Tanimi is not null and Resim is not null
+--null olmayan verileri getirir tanimi null olmayacak ve resim null olmayacak
+--Personel id si 4 olan ve nakliyeci ücreti 15 ile 45 arasında olan sevk tarihine
+--göre tersten sıralayarak son 3 kaydı getiren satışları listeleyiniz
+
+select top 3 *from Satislar where PersonelID in(4) and NakliyeUcreti between 15 and 45 order by 
+SevkTarihi desc
+
+select *from Satislar where PersonelID in(4) and NakliyeUcreti between 15 and 45 order by 
+SevkTarihi desc
+
+--Aggregate fonksiyonları
+--5 tane fonkisyon türü vardır
+--bu fonskiyonlar select ile from arasına yazılır
+--kullanılırken yanına kolan getirilemez(şimdilik)
+
+--1 count fonksiyonu
+--satır adedini verir
+--satır adedini verir
+select count(UrunAdi) from Urunler where KategoriID=4
+select count(KategoriAdi) from kategoriler where KategoriAdi!=null
+--2 sum toplama işlemi yapmayı sağlar
+select sum(HedefStokDuzeyi) from urunler  where TedarikciID=5
+select sum(BirimFiyati*HedefStokDuzeyi) from urunler 
+
+select sum(BirimFiyati*miktar*(1-indirim)) from [Satis Detaylari] where UrunID=5
+select sum(BirimFiyati*miktar*(1-indirim))/count(BirimFiyati) from [Satis Detaylari] where UrunID=5
+
+
+select sum(NakliyeUcreti) from Satislar where SevkSehri='graz'
+select count(NakliyeUcreti) from Satislar where SevkSehri='graz'
+--ortalama bulma
+select sum(NakliyeUcreti)/count(NakliyeUcreti) from Satislar where SevkSehri='graz'
+
+select *from [Satis Detaylari]
+
+
+--ortalama bulma
+select sum(NakliyeUcreti)/count(NakliyeUcreti) from Satislar where SevkSehri='graz'
+
+--3 avg ortalama alan fonksiyondur
+select avg(NakliyeUcreti) from satislar where SevkSehri='graz'
+
+select avg(BirimFiyati) from urunler
+
+--Max kolon içerisindeki en büyük değeri verir
+select max(HedefStokDuzeyi)from Urunler
+select  max(BirimFiyati) from urunler 
+select  min(BirimFiyati) from urunler 
+
+--group by tablo içersindeki verileri gruplamayı sağlıyor
+
+--hangi kategoriden kaç adet urun vardır
+select KategoriId,count(UrunAdi) as 'UrunAdetleri' from Urunler group by KategoriID
+--hangi tedarikçiden kaç adet ürün alınmış
+
+select TedarikciID,count(UrunAdi) as UrunSayisi from Urunler group by TedarikciID
+select count(*) from urunler where TedarikciID=7-- '*' sembolude kullanılır
+
+-- ürünler tablosunda hangi kategoriden kaç adet vardır ve toplam kaç adettir
+select KategoriId,count(KategoriID) as KategoriSayısı,sum(HedefStokDuzeyi) as 
+'KategoriStokToplam',sum(HedefStokDuzeyi*BirimFiyati) as toplamsatis from Urunler group by KategoriID
+
+--hangi tedarikçiden kaç adet tedarik yapılmış ve tedarikçiye ödenen ücret
+select TedarikciID,count(TedarikciID) as ToplamTedarik,sum(BirimFiyati*HedefStokDuzeyi) as ToplamAdet,
+sum(BirimFiyati*HedefStokDuzeyi) as ToplamFiyat  from Urunler group by TedarikciID order by ToplamFiyat
+
+
+select *from Urunler where TedarikciID=1
+
+--Ülkelere sevk edilen ürünlerin toplam nakliye ücretlerini ekrana yazma
+
+select sevkUlkesi,count(SevkUlkesi) as SevkSayisi,sum(NakliyeUcreti) as ToplamNakliyeUcret,
+avg(NakliyeUcreti)as OrtalamaNakliyeUcreti from Satislar group by SevkUlkesi 
+order by ToplamNakliyeUcret desc--order by sıralama
+
+--hangi personel hangi müşteriye kaç adet ve toplam kaç adet dolar satış yapmıştır
+select PersonelID,MusteriID,count(PersonelID)  adet from Satislar group by PersonelID,MusteriID
+order by PersonelID , adet desc
+
+select  MusteriID,PersonelID,count(PersonelID)  adet from Satislar group by PersonelID,MusteriID
+order by MusteriId , adet desc
+
+--hangi müşterinin hangi nakliyeciden kaç adet siparişte bulunduğunu bulan kod
+
+select MusteriID,ShipVia,count(MusteriID) nakliyeAdet from Satislar group by MusteriID,ShipVia 
+order by MusteriID ,nakliyeAdet desc
+--birim fiyatı 18 den büyük ürünler
+select *from Urunler where BirimFiyati>18
+
+--urunun kategorisini kategori id kullanarak kategoriler table ından çekmek
+select UrunID,UrunAdi,(select  KategoriAdi from Kategoriler where KategoriID=Urunler.KategoriID)
+KategoriAdi from Urunler
+
+--tedarikci adını getirme
+select UrunID,Urunadi,TedarikciID,(select SirketAdi from Tedarikciler
+where TedarikciID=Urunler.TedarikciID) as SirketAdi from Urunler
+
+--satışlar tablosunu müşteri adı ünvanı personel adı soyadı ile ekrana yazdır
+--iki sutunu tek sutunda  birleştirerek gönderebilirsin
+select *,(select MusteriAdi+'  '+MusteriUnvani from Musteriler where MusteriId=Satislar.MusteriID) MusteriAdUnvan,
+(select P.Adi+'  '+P.SoyAdi from Personeller P where PersonelID=Satislar.PersonelID) PersonelAdSoyad from Satislar
+
+--ürünler tablosu ile birlikte
+--herbir ürünün toplam satış adedinin bilgisini gösteren sorgu ekranını yazdırma
+
+select *,(select sum(S.Miktar) from [Satis Detaylari] S  where S.UrunID=U.UrunID) ToplamSatisAdedi from Urunler U
+--ürünler tablosu ile birlikte her ürünün toplam satış adedi
+
+
+--personel adı Nancy veya Janet olan, nakliyecisi speedy express olan satışları
+select * from Satislar where PersonelID in 
+(select PersonelID from Personeller where Adi in ('nancy','janet')) and 
+Shipvia= (select NakliyeciID from Nakliyeciler where SirketAdi ='speedy express')
+
+
+
+
+
